@@ -1,0 +1,721 @@
+/* ============================================================
+   动效层 — 高级感 & 流畅操作
+   纯 CSS/JS 实现，零新增依赖；尊重 prefers-reduced-motion
+   ============================================================ */
+
+/* ---------- 关键帧 ---------- */
+@keyframes ddShimmer {
+    from { transform: translateX(-120%) skewX(-18deg); }
+    to   { transform: translateX(220%) skewX(-18deg); }
+}
+
+@keyframes ddGradientText {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes ddGradientBg {
+    0%   { transform: translate(0, 0) scale(1); }
+    33%  { transform: translate(6%, -5%) scale(1.12); }
+    66%  { transform: translate(-5%, 6%) scale(0.94); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes ddFloatOrb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%      { transform: translate(24px, -30px) scale(1.08); }
+    66%      { transform: translate(-20px, 22px) scale(0.94); }
+}
+
+@keyframes ddRaySpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes ddGridDrift {
+    from { background-position: 0 0; }
+    to   { background-position: 48px 48px; }
+}
+
+@keyframes ddRippleRing {
+    0%   { opacity: 0.55; transform: translate(-50%, -50%) scale(0.1); }
+    100% { opacity: 0;    transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes ddArcIn {
+    from { opacity: 0; transform: translateY(44px) translateX(-26px) scale(0.92); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes ddBounceIn {
+    0%   { opacity: 0; transform: scale(0.55) translateY(20px); }
+    60%  { opacity: 1; transform: scale(1.05) translateY(-3px); }
+    80%  { transform: scale(0.97); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ddFlipIn {
+    from { opacity: 0; transform: perspective(900px) rotateY(-16deg) translateY(14px); }
+    to   { opacity: 1; transform: perspective(900px) rotateY(0) translateY(0); }
+}
+
+@keyframes ddBlurIn {
+    from { opacity: 0; filter: blur(10px); transform: translateY(10px); }
+    to   { opacity: 1; filter: blur(0); transform: none; }
+}
+
+@keyframes ddSlideIn {
+    from { opacity: 0; transform: translateX(-14px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes ddRowIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes ddPressPulse {
+    0%   { transform: scale(0); opacity: 0.5; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes ddSkeletonWave {
+    0%   { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+/* ---------- 入场动画工具类 ---------- */
+.dd-anim-arc     { animation: ddArcIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.dd-anim-bounce  { animation: ddBounceIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.dd-anim-flip    { animation: ddFlipIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.dd-anim-blur    { animation: ddBlurIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* 滚动进入视口后再触发（由 Reveal 组件切换 .in） */
+.dd-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform, filter;
+}
+.dd-reveal.in {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+}
+
+/* 错峰动画：子项用 --i 控制延迟 */
+.dd-stagger > * {
+    animation: ddBlurIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* ---------- 按钮微交互 ---------- */
+/* 点击涟漪（CSS 版：从按钮中心扩散） */
+.ant-btn {
+    position: relative;
+    overflow: hidden;
+}
+.ant-btn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 60%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 70%);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    pointer-events: none;
+}
+.ant-btn:active::after {
+    animation: ddPressPulse 0.45s ease-out;
+}
+
+/* 果冻回弹（主要操作按钮） */
+.dd-jelly {
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+.dd-jelly:hover {
+    transform: scale(1.03);
+}
+.dd-jelly:active {
+    transform: scale(0.96);
+}
+
+/* 悬浮生长 / 浮动 */
+.dd-grow  { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.dd-grow:hover { transform: scale(1.04); }
+
+/* ---------- 3D 悬浮卡片（由 TiltCard 设置 --rx/--ry） ---------- */
+.dd-tilt {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.25s ease-out, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+/* ---------- 数字滚动 ---------- */
+.dd-count-num {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 文字特效 ---------- */
+.dd-gradient-text {
+    background: linear-gradient(90deg, #FCD34D, #F59E0B, #FDE68A, #FCD34D);
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: ddGradientText 7s linear infinite;
+}
+
+/* 品牌文字流光 */
+.dd-text-shimmer {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+}
+.dd-text-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+    transform: translateX(-120%) skewX(-18deg);
+    animation: ddShimmer 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* 卡片表面流光扫过一次 */
+.dd-sweep {
+    position: relative;
+    overflow: hidden;
+}
+.dd-sweep::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 42%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: translateX(-120%) skewX(-18deg);
+    animation: ddShimmer 4.5s ease-in-out 1.2s 1;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ---------- 骨架屏波浪 ---------- */
+.dd-skeleton {
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--skeleton-1) 25%, var(--skeleton-2) 40%, var(--skeleton-1) 55%);
+    background-size: 200% 100%;
+    animation: ddSkeletonWave 1.4s ease infinite;
+}
+
+/* ---------- 表格行入场 ---------- */
+.dd-table .ant-table-tbody > tr {
+    animation: ddRowIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--row-i, 0) * 22ms);
+}
+
+/* ---------- 列表错峰（重复横幅） ---------- */
+.dd-dup-list li {
+    animation: ddSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 55ms);
+}
+
+/* ---------- 交互式动态背景 ---------- */
+.dd-anim-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: auto;
+}
+
+/* 流动渐变底 */
+.dd-bg-gradient {
+    position: absolute;
+    inset: -30%;
+    background:
+        radial-gradient(42% 38% at 18% 22%, rgba(245, 158, 11, 0.30), transparent 60%),
+        radial-gradient(38% 34% at 82% 18%, rgba(59, 130, 246, 0.26), transparent 60%),
+        radial-gradient(40% 40% at 70% 86%, rgba(190, 24, 93, 0.16), transparent 60%),
+        radial-gradient(34% 34% at 12% 88%, rgba(16, 185, 129, 0.16), transparent 60%),
+        radial-gradient(60% 60% at 50% 50%, rgba(255, 255, 255, 0.05), transparent 70%);
+    animation: ddGradientBg 26s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+/* 漂浮光斑 */
+.dd-bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(46px);
+    opacity: 0.5;
+    will-change: transform;
+}
+.dd-bg-orb.o1 { width: 340px; height: 340px; left: 6%;  top: 12%; background: rgba(245, 158, 11, 0.4);  animation: ddFloatOrb 14s ease-in-out infinite; }
+.dd-bg-orb.o2 { width: 300px; height: 300px; right: 8%; top: 18%; background: rgba(59, 130, 246, 0.36); animation: ddFloatOrb 17s ease-in-out 1.2s infinite reverse; }
+.dd-bg-orb.o3 { width: 260px; height: 260px; left: 42%; bottom: 6%; background: rgba(16, 185, 129, 0.28); animation: ddFloatOrb 20s ease-in-out 0.6s infinite; }
+
+/* 丁达尔光线（缓慢旋转的放射光） */
+.dd-bg-rays {
+    position: absolute;
+    inset: -60%;
+    background: repeating-conic-gradient(
+        from 0deg,
+        rgba(255, 255, 255, 0.035) 0deg 4deg,
+        transparent 4deg 26deg
+    );
+    animation: ddRaySpin 90s linear infinite;
+    mask-image: radial-gradient(60% 60% at 50% 42%, #000 20%, transparent 75%);
+    -webkit-mask-image: radial-gradient(60% 60% at 50% 42%, #000 20%, transparent 75%);
+}
+
+/* 网格流动 */
+.dd-bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 48px 48px;
+    animation: ddGridDrift 20s linear infinite;
+    mask-image: radial-gradient(80% 80% at 50% 40%, #000 20%, transparent 100%);
+    -webkit-mask-image: radial-gradient(80% 80% at 50% 40%, #000 20%, transparent 100%);
+}
+
+/* 光标跟随光晕 */
+.dd-bg-glow {
+    position: absolute;
+    width: 460px;
+    height: 460px;
+    margin-left: -230px;
+    margin-top: -230px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 40%, transparent 70%);
+    mix-blend-mode: screen;
+    transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1), top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    will-change: left, top;
+}
+
+/* 点击涟漪（从点击位置扩散） */
+.dd-bg-ripple {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    margin-left: -45px;
+    margin-top: -45px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    box-shadow: inset 0 0 24px rgba(255, 255, 255, 0.22);
+    animation: ddRippleRing 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    pointer-events: none;
+}
+
+/* 登录页容器：动态背景铺满整页 */
+.auth-shell {
+    position: relative;
+    background: var(--paper);
+}
+.auth-shell > .dd-anim-bg {
+    position: fixed;
+}
+
+/* 左栏深色玻璃面板：多层渐变 + 漂移光晕 + 透出背景动画 */
+.auth-panel {
+    background:
+        radial-gradient(70% 55% at 12% 0%, rgba(245, 158, 11, 0.20), transparent 62%),
+        radial-gradient(55% 45% at 100% 20%, rgba(59, 130, 246, 0.22), transparent 60%),
+        radial-gradient(55% 50% at 78% 104%, rgba(236, 72, 153, 0.14), transparent 62%),
+        radial-gradient(40% 40% at 28% 92%, rgba(16, 185, 129, 0.13), transparent 60%),
+        rgba(21, 18, 16, 0.84);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+/* 双层漂移光晕（仅 transform，GPU 合成） */
+.auth-panel::before,
+.auth-panel::after {
+    content: "";
+    position: absolute;
+    inset: -22%;
+    pointer-events: none;
+    z-index: 0;
+}
+.auth-panel::before {
+    background: radial-gradient(42% 42% at 30% 28%, rgba(245, 158, 11, 0.16), transparent 70%);
+    animation: ddPanelDrift 16s ease-in-out infinite alternate;
+}
+.auth-panel::after {
+    background: radial-gradient(42% 42% at 72% 72%, rgba(59, 130, 246, 0.15), transparent 70%);
+    animation: ddPanelDrift 22s ease-in-out infinite alternate-reverse;
+}
+@keyframes ddPanelDrift {
+    from { transform: translate3d(-4%, -2%, 0) scale(1); }
+    to   { transform: translate3d(4%, 3%, 0) scale(1.08); }
+}
+
+/* 右栏不再遮挡背景 */
+.auth-main {
+    background: transparent;
+}
+
+/* 登录卡片：扫描流光 + 更精致 */
+.auth-card {
+    box-shadow: 0 18px 60px rgba(28, 25, 23, 0.2);
+}
+
+/* 登录头部标题：模糊聚焦入场 */
+.auth-headline {
+    animation: ddBlurIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+/* ---------- 页头滚动阴影 ---------- */
+.dd-header-scrolled {
+    box-shadow: 0 8px 28px rgba(28, 25, 23, 0.08);
+}
+
+/* ---------- 统计卡 3D 悬浮增强 ---------- */
+.dd-stat {
+    transform-style: preserve-3d;
+}
+
+/* ---------- 减少动效偏好 ---------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+/* ---------- 页面容器入场 ---------- */
+.dd-card {
+    animation: ddBlurIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---------- Tab 切换：内容模糊聚焦入场 ---------- */
+.ant-tabs-tabpane-active {
+    animation: ddBlurIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ---------- 上传拖拽区：悬浮生长 ---------- */
+.ant-upload-drag {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.ant-upload-drag:hover {
+    transform: scale(1.008);
+}
+
+/* ---------- Segmented / 开关 / 复选：更顺滑 ---------- */
+.ant-segmented-item,
+.ant-switch,
+.ant-checkbox-inner {
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* ---------- 行选中提示轻微浮动 ---------- */
+.ant-table-row-selected > td {
+    transition: background 0.25s ease;
+}
+
+/* ---------- 弹窗内容：更优雅的展开 ---------- */
+.ant-modal-content {
+    animation: ddFlipIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* ============================================================
+   3D 翻转登录卡片（正面=登录，背面=注册）
+   ============================================================ */
+.dd-flip {
+    perspective: 1400px;
+}
+.dd-flip-inner {
+    position: relative;
+    display: grid;
+    transform-style: preserve-3d;
+    transition: transform 0.75s cubic-bezier(0.45, 0.05, 0.2, 1);
+}
+.dd-flip.flipped .dd-flip-inner {
+    transform: rotateY(180deg);
+}
+.dd-flip-face {
+    grid-area: 1 / 1;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.dd-flip-back {
+    transform: rotateY(180deg);
+}
+.dd-flip-face.away {
+    pointer-events: none;
+}
+
+/* 注册表单 2×2 网格 */
+.dd-reg-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 12px;
+}
+.dd-reg-grid .ant-form-item {
+    margin-bottom: 16px;
+}
+.dd-reg-full {
+    margin-bottom: 16px;
+}
+
+/* 翻转切换链接 */
+.dd-flip-switch {
+    margin-top: 18px;
+    text-align: center;
+    color: var(--ink-3);
+    font-size: 13px;
+}
+.dd-flip-switch button {
+    border: none;
+    background: none;
+    color: var(--ink);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 4px;
+    font-size: 13px;
+    font-family: var(--sans);
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+.dd-flip-switch button:hover {
+    color: #D97706;
+    transform: translateX(2px);
+}
+
+/* 窄屏：2×2 退化为单列 */
+@media (max-width: 420px) {
+    .dd-reg-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   登录页进阶质感（华丽 & 可访问 & 60fps）
+   ============================================================ */
+
+/* 漂浮微尘：仅 transform 位移，GPU 合成 */
+.dd-bg-dust {
+    position: absolute;
+    inset: -100px;
+    z-index: 1;
+    pointer-events: none;
+    background-image:
+        radial-gradient(2px 2px at 12% 28%, rgba(255, 255, 255, 0.55), transparent 60%),
+        radial-gradient(1.6px 1.6px at 34% 64%, rgba(255, 255, 255, 0.4), transparent 60%),
+        radial-gradient(1.4px 1.4px at 58% 22%, rgba(245, 158, 11, 0.5), transparent 60%),
+        radial-gradient(2px 2px at 72% 48%, rgba(255, 255, 255, 0.35), transparent 60%),
+        radial-gradient(1.5px 1.5px at 86% 70%, rgba(59, 130, 246, 0.4), transparent 60%),
+        radial-gradient(1.3px 1.3px at 22% 82%, rgba(255, 255, 255, 0.45), transparent 60%);
+    background-size: 600px 600px;
+    background-repeat: repeat;
+    opacity: 0.55;
+    animation: ddDustDrift 90s linear infinite;
+    will-change: transform;
+}
+[data-theme="dark"] .dd-bg-dust {
+    opacity: 0.7;
+}
+@keyframes ddDustDrift {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-600px, -600px, 0); }
+}
+
+/* 品牌水印：巨大的衬线“查”字，极淡 */
+.dd-watermark {
+    position: absolute;
+    right: -34px;
+    bottom: -58px;
+    font-family: var(--serif);
+    font-size: clamp(200px, 26vw, 320px);
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.035);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    letter-spacing: -0.04em;
+}
+[data-theme="dark"] .dd-watermark {
+    color: rgba(255, 255, 255, 0.04);
+}
+
+/* 面板流光（缓慢扫过） */
+.dd-panel-sheen {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+.dd-panel-sheen::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 38%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.07), transparent);
+    transform: translateX(-130%) skewX(-18deg);
+    animation: ddShimmer 6.5s ease-in-out infinite alternate;
+}
+
+/* 策展式标签胶囊（detail.design 风格） */
+.dd-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 26px;
+}
+.dd-cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 13px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: #E7E2D9;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    letter-spacing: 0.04em;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
+}
+.dd-cat-pill:hover {
+    transform: translateY(-2px);
+    border-color: rgba(245, 158, 11, 0.55);
+}
+
+/* 面板引言 */
+.dd-quote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: #CBC5BB;
+    margin-top: 28px;
+    border-left: 2px solid rgba(245, 158, 11, 0.55);
+    padding-left: 14px;
+    line-height: 1.7;
+    max-width: 460px;
+}
+
+/* 卡片顶部高光（玻璃感，不影响底色） */
+.auth-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+    pointer-events: none;
+    z-index: 2;
+}
+[data-theme="dark"] .auth-card::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+/* 可访问性：清晰可见的焦点轮廓 */
+:focus-visible {
+    outline: 2px solid var(--amber) !important;
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+.dd-user:focus-visible,
+.dd-theme-fab:focus-visible {
+    outline-offset: 3px;
+}
+
+/* 减少动效：把“无限循环”背景动画也一次性定格 */
+@media (prefers-reduced-motion: reduce) {
+    .dd-bg-dust,
+    .dd-bg-rays,
+    .dd-bg-grid,
+    .dd-bg-orb.o1,
+    .dd-bg-orb.o2,
+    .dd-bg-orb.o3,
+    .dd-panel-sheen::before,
+    .auth-panel::before,
+    .auth-panel::after,
+    .dd-bg-glow,
+    .dd-text-shimmer::after {
+        animation: none !important;
+    }
+}
+
+/* ============================================================
+   主页面背景（登录后）— 柔和渐变 + 漂浮光斑 + 细网格
+   浅色/深色均使用主题变量；仅 transform/opacity，60fps
+   ============================================================ */
+.dd-page-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background:
+        radial-gradient(48% 40% at 12% 6%, var(--mb-amber), transparent 62%),
+        radial-gradient(40% 34% at 96% 12%, var(--mb-blue), transparent 60%),
+        radial-gradient(44% 40% at 88% 94%, var(--mb-pink), transparent 62%),
+        radial-gradient(36% 34% at 8% 92%, var(--mb-green), transparent 60%);
+}
+.dd-page-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--mb-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--mb-grid) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(80% 80% at 50% 18%, #000 20%, transparent 100%);
+    -webkit-mask-image: radial-gradient(80% 80% at 50% 18%, #000 20%, transparent 100%);
+}
+.dd-mb-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(64px);
+    opacity: 0.5;
+    will-change: transform;
+}
+.dd-mb-orb.mb-amber {
+    width: 520px;
+    height: 520px;
+    left: -90px;
+    top: 6%;
+    background: var(--mb-amber);
+    animation: ddFloatOrb 26s ease-in-out infinite;
+}
+.dd-mb-orb.mb-blue {
+    width: 460px;
+    height: 460px;
+    right: -70px;
+    bottom: 4%;
+    background: var(--mb-blue);
+    animation: ddFloatOrb 32s ease-in-out infinite reverse;
+}
+
+/* 主内容与表头浮在背景之上 */
+.dd-main-content {
+    position: relative;
+    z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dd-mb-orb.mb-amber,
+    .dd-mb-orb.mb-blue {
+        animation: none !important;
+    }
+}

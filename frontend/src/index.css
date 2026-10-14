@@ -1,0 +1,1324 @@
+/* ============================================================
+   订单查重管理系统 — 设计系统（深色 / 浅色双主题）
+   设计语言参考 detail.design：暖纸色底、黑白主色、衬线标题、
+   大圆角卡片、克制的工艺细节
+   ============================================================ */
+
+/* ---------- 浅色主题（默认变量） ---------- */
+:root,
+[data-theme="light"] {
+    color-scheme: light;
+    /* 色板 */
+    --paper: #F6F4EF;
+    --card: #FFFFFF;
+    --ink: #1C1917;
+    --ink-2: #292524;
+    --ink-3: #57534E;
+    --muted: #A8A29E;
+    --line: #E7E5E4;
+    --line-2: #D6D3D1;
+
+    --amber: #F59E0B;
+    --amber-deep: #B45309;
+    --amber-soft: #FFFBEB;
+    --amber-line: #FDE68A;
+    --amber-text: #92400E;
+
+    --danger: #DC2626;
+    --danger-deep: #B91C1C;
+    --danger-soft: #FEF2F2;
+    --danger-line: #FECACA;
+    --danger-text: #991B1B;
+    --danger-text-strong: #7F1D1D;
+
+    --success: #16A34A;
+    --success-deep: #15803D;
+    --success-soft: #F0FDF4;
+    --success-line: #BBF7D0;
+    --success-text: #166534;
+
+    --info: #2563EB;
+    --info-deep: #1D4ED8;
+    --info-soft: #EFF6FF;
+    --info-line: #BFDBFE;
+    --info-text: #1E40AF;
+
+    /* 语义色（浅色） */
+    --pill-gray-bg: #F1EFEA;
+    --pill-ink-bg: #1C1917;
+    --pill-ink-text: #FAFAF9;
+    --pill-dark-bg: #292524;
+    --pill-dark-text: #E7E5E4;
+    --pill-purple-bg: #FAF5FF;
+    --pill-purple-text: #7E22CE;
+    --pill-purple-line: #E9D5FF;
+    --pill-cyan-bg: #ECFEFF;
+    --pill-cyan-text: #0E7490;
+    --pill-cyan-line: #A5F3FC;
+
+    --header-bg: rgba(246, 244, 239, 0.94);
+    --avatar-bg: #1C1917;
+    --avatar-text: #FFFFFF;
+    --table-header-bg: #FAF9F6;
+    --table-row-line: #F1EFEA;
+    --table-row-hover: #FAF9F5;
+    --table-row-selected: #FDF6E9;
+    --tab-ink: #1C1917;
+    --focus-ring: rgba(28, 25, 23, 0.08);
+    --scroll-thumb: #D6D3D1;
+    --scroll-thumb-hover: #A8A29E;
+    --summary-bg: #FAF9F6;
+    --upload-bg: #FAF9F6;
+    --segmented-bg: #F0EEE9;
+    --segmented-selected-bg: #FFFFFF;
+    --row-dup-bg: #FEF6F5;
+    --row-processed-bg: #F6FBF5;
+    --skeleton-1: #EFEDE8;
+    --skeleton-2: #F8F6F2;
+    --auth-panel-bg: #171412;
+    --auth-panel-line: transparent;
+    --btn-shadow: 0 8px 20px rgba(28, 25, 23, 0.18);
+    --btn-shadow-hover: 0 10px 26px rgba(28, 25, 23, 0.24);
+
+    /* 阴影 */
+    --shadow-1: 0 1px 2px rgba(28, 25, 23, 0.05), 0 2px 8px rgba(28, 25, 23, 0.04);
+    --shadow-2: 0 1px 2px rgba(28, 25, 23, 0.06), 0 8px 28px rgba(28, 25, 23, 0.08);
+    --shadow-3: 0 12px 40px rgba(28, 25, 23, 0.16);
+}
+
+/* ---------- 深色主题 ---------- */
+[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #141210;
+    --card: #1E1B18;
+    --ink: #F5F1EA;
+    --ink-2: #E7E2D9;
+    --ink-3: #A8A29E;
+    --muted: #78716C;
+    --line: #2E2A25;
+    --line-2: #3D3831;
+
+    --amber: #F59E0B;
+    --amber-deep: #FBBF24;
+    --amber-soft: #2A2112;
+    --amber-line: #4A3512;
+    --amber-text: #FCD34D;
+
+    --danger: #F87171;
+    --danger-deep: #FCA5A5;
+    --danger-soft: #2B1513;
+    --danger-line: #5B1E1A;
+    --danger-text: #FCA5A5;
+    --danger-text-strong: #FECACA;
+
+    --success: #4ADE80;
+    --success-deep: #86EFAC;
+    --success-soft: #122416;
+    --success-line: #1E4A2C;
+    --success-text: #86EFAC;
+
+    --info: #60A5FA;
+    --info-deep: #93C5FD;
+    --info-soft: #12202E;
+    --info-line: #1E3A5F;
+    --info-text: #93C5FD;
+
+    /* 语义色（深色） */
+    --pill-gray-bg: #2A2621;
+    --pill-ink-bg: #F59E0B;
+    --pill-ink-text: #1C1917;
+    --pill-dark-bg: #38332D;
+    --pill-dark-text: #E7E2D9;
+    --pill-purple-bg: #241733;
+    --pill-purple-text: #D8B4FE;
+    --pill-purple-line: #3B2561;
+    --pill-cyan-bg: #0E2A31;
+    --pill-cyan-text: #67E8F9;
+    --pill-cyan-line: #155E75;
+
+    --header-bg: rgba(20, 18, 16, 0.9);
+    --avatar-bg: #F59E0B;
+    --avatar-text: #1C1917;
+    --table-header-bg: #1B1815;
+    --table-row-line: #262220;
+    --table-row-hover: #211D19;
+    --table-row-selected: #2E2618;
+    --tab-ink: #F59E0B;
+    --focus-ring: rgba(245, 158, 11, 0.18);
+    --scroll-thumb: #3D3831;
+    --scroll-thumb-hover: #57534E;
+    --summary-bg: #26221E;
+    --upload-bg: #1B1815;
+    --segmented-bg: #2A2621;
+    --segmented-selected-bg: #3A342D;
+    --row-dup-bg: #2E1B18;
+    --row-processed-bg: #14231A;
+    --skeleton-1: #26221E;
+    --skeleton-2: #322D27;
+    --auth-panel-bg: rgba(17, 15, 13, 0.82);
+    --auth-panel-line: rgba(255, 255, 255, 0.06);
+    --btn-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+    --btn-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.55);
+
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.25);
+    --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 28px rgba(0, 0, 0, 0.35);
+    --shadow-3: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* 字体与圆角（两主题一致） */
+:root {
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman",
+        "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+        "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas,
+        "Liberation Mono", Menlo, monospace;
+    --r-sm: 8px;
+    --r: 12px;
+    --r-lg: 16px;
+    --r-xl: 20px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+    background: #FDE68A;
+    color: #1C1917;
+}
+
+/* ---------- 滚动条 ---------- */
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-thumb-hover);
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ---------- 工具类 ---------- */
+.dd-serif {
+    font-family: var(--serif);
+}
+
+.dd-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.dd-fade-up {
+    animation: ddFadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes ddFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes ddFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes ddPulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.4;
+        transform: scale(0.94);
+    }
+}
+
+/* ---------- 启动加载屏 ---------- */
+.dd-loader {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: var(--paper);
+}
+
+.dd-loader-inner {
+    display: grid;
+    place-items: center;
+    gap: 18px;
+}
+
+.dd-loader .dd-pulse {
+    animation: ddPulse 1.6s ease-in-out infinite;
+}
+
+.dd-loader-text {
+    color: var(--ink-3);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+}
+
+/* ---------- 外观切换按钮 ---------- */
+.dd-theme-fab {
+    position: fixed !important;
+    top: 18px;
+    right: 22px;
+    z-index: 200;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    background: var(--card) !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: var(--shadow-2);
+    color: var(--ink) !important;
+    font-size: 16px !important;
+    display: grid;
+    place-items: center;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, border-color 0.2s ease;
+}
+
+.dd-theme-fab:hover {
+    color: var(--amber) !important;
+    border-color: var(--amber-line) !important;
+    transform: rotate(24deg) scale(1.06);
+}
+
+.dd-theme-btn {
+    color: var(--ink-3) !important;
+    font-size: 16px !important;
+    transition: color 0.2s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dd-theme-btn:hover {
+    color: var(--amber) !important;
+    transform: rotate(24deg) scale(1.08);
+}
+
+/* ============================================================
+   认证页（登录 / 公司设置）— 左深色品牌面板 + 右表单
+   ============================================================ */
+.auth-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    background: var(--paper);
+}
+
+.auth-panel {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 56px 64px;
+    color: #F5F5F4;
+    background: var(--auth-panel-bg);
+    border-right: 1px solid var(--auth-panel-line);
+}
+
+.auth-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.auth-word {
+    font-family: var(--serif);
+    font-size: 20px;
+    letter-spacing: 0.08em;
+    color: #FAFAF9;
+}
+
+.auth-headline {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(34px, 4.2vw, 54px);
+    line-height: 1.22;
+    letter-spacing: 0.02em;
+    margin: 18px 0 20px;
+    color: #FAFAF9;
+}
+
+.auth-headline em {
+    font-style: italic;
+    color: #FCD34D;
+}
+
+.auth-lead {
+    color: #D6D3D1;
+    font-size: 15px;
+    max-width: 440px;
+    margin: 0;
+}
+
+.auth-points {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0 0;
+    display: grid;
+    gap: 14px;
+}
+
+.auth-points li {
+    display: flex;
+    gap: 13px;
+    align-items: flex-start;
+    color: #E7E5E4;
+}
+
+.auth-point-ic {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(245, 158, 11, 0.16);
+    color: #FBBF24;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    flex: none;
+    margin-top: 3px;
+}
+
+.auth-points b {
+    display: block;
+    font-weight: 600;
+    color: #FAFAF9;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.auth-points span {
+    display: block;
+    color: #A8A29E;
+    font-size: 12.5px;
+    line-height: 1.55;
+}
+
+.auth-foot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #78716C;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+}
+
+.auth-foot .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #78716C;
+    flex: none;
+}
+
+.auth-main {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 32px;
+}
+
+.auth-main::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(600px 420px at 18% 8%, rgba(245, 158, 11, 0.07), transparent 62%),
+        radial-gradient(720px 520px at 92% 92%, rgba(59, 130, 246, 0.07), transparent 62%);
+}
+
+.auth-card {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-2);
+    padding: 40px 38px 30px;
+    animation: ddFadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.auth-card-head {
+    margin-bottom: 24px;
+}
+
+.auth-card-head .dd-eyebrow {
+    margin-bottom: 14px;
+}
+
+.auth-card-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    line-height: 1.25;
+    margin: 0 0 6px;
+    letter-spacing: 0.01em;
+}
+
+.auth-card-sub {
+    color: var(--ink-3);
+    font-size: 13px;
+    margin: 0;
+}
+
+@media (max-width: 920px) {
+    .auth-shell {
+        grid-template-columns: 1fr;
+    }
+    .auth-panel {
+        display: none;
+    }
+    .auth-main {
+        padding: 32px 16px;
+    }
+}
+
+/* 登录/注册模式切换（保留样式，供扩展） */
+.dd-mode {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    background: var(--segmented-bg);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 26px;
+}
+
+.dd-mode button {
+    border: none;
+    background: transparent;
+    border-radius: 9px;
+    height: 38px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: var(--sans);
+    letter-spacing: 0.1em;
+}
+
+.dd-mode button.active {
+    background: var(--segmented-selected-bg);
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(28, 25, 23, 0.12);
+}
+
+.dd-mode button:hover:not(.active) {
+    color: var(--ink);
+}
+
+.dd-submit {
+    height: 46px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.1em;
+    box-shadow: var(--btn-shadow);
+    transition: all 0.25s ease;
+}
+
+.dd-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--btn-shadow-hover);
+}
+
+.dd-ghost {
+    height: 46px !important;
+}
+
+.dd-or {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 12px;
+    margin: 18px 0;
+}
+
+.dd-or::before,
+.dd-or::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+}
+
+.dd-note {
+    margin-top: 14px;
+    font-size: 12.5px !important;
+}
+
+/* ============================================================
+   主界面
+   ============================================================ */
+.dd-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(16px, 3.5vw, 40px);
+    background: var(--header-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+}
+
+.dd-header-left,
+.dd-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.dd-wordmark {
+    font-family: var(--serif);
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.dd-wordmark small {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.24em;
+    margin-left: 10px;
+}
+
+.dd-user {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    padding: 4px 12px 4px 5px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    transition: all 0.25s ease;
+}
+
+.dd-user:hover {
+    border-color: var(--line-2);
+    box-shadow: var(--shadow-1);
+}
+
+.dd-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--avatar-bg);
+    color: var(--avatar-text);
+    display: grid;
+    place-items: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    flex: none;
+}
+
+.dd-page-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.dd-page-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    line-height: 1.2;
+    margin: 0;
+    letter-spacing: 0.01em;
+}
+
+.dd-page-sub {
+    color: var(--ink-3);
+    font-size: 13px;
+    margin: 5px 0 0;
+}
+
+/* 统计卡 */
+.dd-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.dd-stat {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 18px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: var(--shadow-1);
+    animation: ddFadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dd-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-2);
+}
+
+.dd-stat-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-3);
+    font-size: 12.5px;
+}
+
+.dd-stat-value {
+    font-family: var(--serif);
+    font-size: 30px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.dd-stat-ic {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    flex: none;
+}
+
+.dd-stat-ic.ic-ink {
+    background: var(--pill-gray-bg);
+    color: var(--ink);
+}
+
+.dd-stat-ic.ic-amber {
+    background: var(--amber-soft);
+    color: var(--amber);
+}
+
+.dd-stat-ic.ic-red {
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
+.dd-stat-ic.ic-green {
+    background: var(--success-soft);
+    color: var(--success);
+}
+
+/* 内容卡片 */
+.dd-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-1);
+    padding: 22px;
+}
+
+/* 通用提示横幅 */
+.dd-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-radius: 14px;
+    padding: 13px 18px;
+    margin-bottom: 16px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    border: 1px solid;
+    animation: ddFadeIn 0.4s ease both;
+}
+
+.dd-banner .dd-banner-ic {
+    margin-top: 3px;
+    flex: none;
+}
+
+.dd-banner b {
+    font-weight: 600;
+}
+
+.dd-banner.amber {
+    background: var(--amber-soft);
+    border-color: var(--amber-line);
+    color: var(--amber-text);
+}
+
+.dd-banner.red {
+    background: var(--danger-soft);
+    border-color: var(--danger-line);
+    color: var(--danger-text);
+}
+
+.dd-banner.green {
+    background: var(--success-soft);
+    border-color: var(--success-line);
+    color: var(--success-text);
+}
+
+.dd-banner.blue {
+    background: var(--info-soft);
+    border-color: var(--info-line);
+    color: var(--info-text);
+}
+
+/* 重复告警（大横幅） */
+.dd-dup-alert {
+    background: var(--danger-soft);
+    border: 1px solid var(--danger-line);
+    border-radius: var(--r-lg);
+    padding: 18px 20px 14px;
+    margin-bottom: 18px;
+    animation: ddFadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.dd-dup-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.dd-dup-ic {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--danger-line);
+    color: var(--danger);
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    flex: none;
+}
+
+.dd-dup-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--danger-deep);
+}
+
+.dd-dup-sub {
+    color: var(--danger-text-strong);
+    font-size: 12.5px;
+    margin-top: 3px;
+}
+
+.dd-dup-list {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    border-top: 1px dashed var(--danger-line);
+}
+
+.dd-dup-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 4px;
+    border-bottom: 1px dashed var(--danger-line);
+    font-size: 13px;
+    color: var(--danger-text-strong);
+}
+
+.dd-dup-list li:last-child {
+    border-bottom: none;
+}
+
+.dd-dup-more {
+    justify-content: flex-start !important;
+    color: var(--muted) !important;
+}
+
+/* 表格内重复提示条 */
+.dd-dup-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    background: var(--danger-soft);
+    border: 1px solid var(--danger-line);
+    border-radius: 12px;
+    padding: 11px 16px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    animation: ddFadeIn 0.35s ease both;
+}
+
+/* 胶囊标签 */
+.dd-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 999px;
+    padding: 1px 10px;
+    font-size: 12px;
+    line-height: 20px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.dd-pill.gray {
+    background: var(--pill-gray-bg);
+    color: var(--ink-3);
+}
+
+.dd-pill.amber {
+    background: var(--amber-soft);
+    color: var(--amber-deep);
+    border-color: var(--amber-line);
+}
+
+.dd-pill.red {
+    background: var(--danger-soft);
+    color: var(--danger-deep);
+    border-color: var(--danger-line);
+}
+
+.dd-pill.green {
+    background: var(--success-soft);
+    color: var(--success-deep);
+    border-color: var(--success-line);
+}
+
+.dd-pill.blue {
+    background: var(--info-soft);
+    color: var(--info-deep);
+    border-color: var(--info-line);
+}
+
+.dd-pill.ink {
+    background: var(--pill-ink-bg);
+    color: var(--pill-ink-text);
+}
+
+.dd-pill.dark {
+    background: var(--pill-dark-bg);
+    color: var(--pill-dark-text);
+}
+
+.dd-pill.purple {
+    background: var(--pill-purple-bg);
+    color: var(--pill-purple-text);
+    border-color: var(--pill-purple-line);
+}
+
+.dd-pill.cyan {
+    background: var(--pill-cyan-bg);
+    color: var(--pill-cyan-text);
+    border-color: var(--pill-cyan-line);
+}
+
+/* 倒计时 */
+.dd-count {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+}
+
+/* 表格工具栏 */
+.dd-toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+/* 弹窗内摘要卡 */
+.dd-modal-summary {
+    background: var(--summary-bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+/* 拖拽上传 */
+.ant-upload-drag {
+    border-radius: 16px !important;
+    border: 1.5px dashed var(--line-2) !important;
+    background: var(--upload-bg) !important;
+    transition: all 0.3s ease;
+}
+
+.ant-upload-drag:hover {
+    border-color: var(--ink) !important;
+}
+
+.ant-upload-drag .ant-upload-drag-icon .anticon {
+    color: var(--amber) !important;
+}
+
+/* 导入中 */
+.dd-importing {
+    text-align: center;
+    padding: 44px 0;
+}
+
+.dd-importing-list {
+    margin-top: 18px;
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 12.5px;
+}
+
+/* ============================================================
+   Ant Design 细节覆盖
+   ============================================================ */
+
+/* 按钮 — 胶囊 */
+.ant-btn {
+    border-radius: 999px;
+}
+
+.ant-btn-lg {
+    border-radius: 999px;
+}
+
+.ant-btn-sm {
+    border-radius: 999px;
+}
+
+/* 输入框 */
+.ant-input-outlined,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker,
+.ant-input-number,
+.ant-input-number-affix-wrapper {
+    border-radius: 12px !important;
+}
+
+/* 输入框与卡片同色（消除深浅主题下的割裂感） */
+.ant-input-outlined,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker,
+.ant-input-number,
+.ant-input-number-affix-wrapper,
+.ant-input,
+.ant-input-password,
+.ant-input-affix-wrapper input {
+    background: var(--card) !important;
+    color: var(--ink) !important;
+}
+
+.ant-input::placeholder,
+.ant-input-affix-wrapper input::placeholder,
+.ant-picker input::placeholder {
+    color: var(--muted) !important;
+    opacity: 1;
+}
+
+.ant-input-affix-wrapper .anticon,
+.ant-select-arrow,
+.ant-picker-suffix {
+    color: var(--muted);
+}
+
+.ant-input-outlined,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker {
+    box-shadow: none !important;
+}
+
+.ant-input-outlined:hover,
+.ant-input-affix-wrapper:hover,
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+.ant-picker:hover {
+    border-color: var(--line-2) !important;
+}
+
+/* 深色主题：输入框描边与卡片融为一体（近乎隐形，聚焦时才点亮） */
+[data-theme="dark"] .ant-input-outlined,
+[data-theme="dark"] .ant-input-affix-wrapper,
+[data-theme="dark"] .ant-select-selector,
+[data-theme="dark"] .ant-picker {
+    border-color: rgba(255, 255, 255, 0.07) !important;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02);
+}
+[data-theme="dark"] .ant-input-outlined:hover,
+[data-theme="dark"] .ant-input-affix-wrapper:hover,
+[data-theme="dark"] .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+[data-theme="dark"] .ant-picker:hover {
+    border-color: rgba(255, 255, 255, 0.18) !important;
+}
+[data-theme="dark"] .ant-input-outlined:focus,
+[data-theme="dark"] .ant-input-affix-wrapper-focused,
+[data-theme="dark"] .ant-select-focused .ant-select-selector,
+[data-theme="dark"] .ant-picker-focused {
+    border-color: var(--amber) !important;
+    box-shadow: 0 0 0 3px var(--focus-ring) !important;
+}
+
+.ant-input-outlined:focus,
+.ant-input-affix-wrapper-focused,
+.ant-select-focused .ant-select-selector,
+.ant-picker-focused {
+    border-color: var(--ink) !important;
+    box-shadow: 0 0 0 3px var(--focus-ring) !important;
+}
+
+/* 标签 — 胶囊 */
+.ant-tag {
+    border-radius: 999px;
+    padding: 1px 10px;
+    line-height: 20px;
+    font-size: 12px;
+}
+
+/* 卡片 */
+.ant-card {
+    border-radius: var(--r-lg);
+    border-color: var(--line);
+    box-shadow: var(--shadow-1);
+}
+
+/* 弹窗 */
+.ant-modal .ant-modal-content {
+    border-radius: var(--r-xl);
+    padding: 24px 28px;
+    box-shadow: var(--shadow-3);
+}
+
+.ant-modal .ant-modal-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    letter-spacing: 0.01em;
+}
+
+.ant-modal .ant-modal-header {
+    margin-bottom: 18px;
+}
+
+/* 表格 */
+.ant-table-wrapper .ant-table {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th {
+    background: var(--table-header-bg) !important;
+    color: var(--ink-3) !important;
+    font-weight: 600;
+    font-size: 12.5px;
+    border-bottom: 1px solid var(--line) !important;
+    letter-spacing: 0.02em;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th::before {
+    display: none;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr > td {
+    border-bottom: 1px solid var(--table-row-line);
+}
+
+.ant-table-wrapper .ant-table-tbody > tr:hover > td {
+    background: var(--table-row-hover) !important;
+}
+
+/* 重复行 / 已处理行 —— 深浅主题各自适配 */
+.dd-table .ant-table-tbody > tr.dd-row-dup > td {
+    background: var(--row-dup-bg);
+    transition: background-color 0.3s ease;
+}
+.dd-table .ant-table-tbody > tr.dd-row-processed > td {
+    background: var(--row-processed-bg);
+    transition: background-color 0.3s ease;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr.ant-table-row-selected > td {
+    background: var(--table-row-selected) !important;
+}
+
+/* 分页 */
+.ant-pagination .ant-pagination-item {
+    border-radius: 8px;
+}
+
+.ant-pagination .ant-pagination-prev .ant-pagination-item-link,
+.ant-pagination .ant-pagination-next .ant-pagination-item-link {
+    border-radius: 8px;
+}
+
+/* Tabs */
+.ant-tabs .ant-tabs-nav::before {
+    border-bottom-color: var(--line);
+}
+
+.ant-tabs .ant-tabs-tab {
+    font-size: 14px;
+    padding: 10px 2px;
+}
+
+.ant-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.ant-tabs .ant-tabs-ink-bar {
+    background: var(--tab-ink);
+}
+
+/* Segmented */
+.ant-segmented {
+    border-radius: 12px;
+    background: var(--segmented-bg);
+    padding: 4px;
+}
+
+.ant-segmented .ant-segmented-item {
+    border-radius: 9px;
+}
+
+.ant-segmented .ant-segmented-item-selected {
+    background: var(--segmented-selected-bg);
+    box-shadow: 0 1px 3px rgba(28, 25, 23, 0.12);
+    color: var(--ink);
+}
+
+/* Steps */
+.ant-steps .ant-steps-item-title {
+    font-size: 13px;
+}
+
+/* 下拉菜单 */
+.ant-dropdown .ant-dropdown-menu {
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: var(--shadow-2);
+}
+
+.ant-dropdown .ant-dropdown-menu-item {
+    border-radius: 8px;
+}
+
+/* Popover / Popconfirm */
+.ant-popover .ant-popover-inner {
+    border-radius: 12px;
+}
+
+/* Alert */
+.ant-alert {
+    border-radius: 12px;
+}
+
+/* Message */
+.ant-message .ant-message-notice-content {
+    border-radius: 12px;
+    box-shadow: var(--shadow-2);
+}
+
+/* 表格行 hover 保持手型 */
+.ant-table-row {
+    transition: background 0.2s ease;
+}
+/* 浏览器自动填充：强制与卡片同色，去黄/蓝底色 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+input:-internal-autofill-selected {
+    -webkit-box-shadow: 0 0 0 1000px var(--card) inset !important;
+    box-shadow: 0 0 0 1000px var(--card) inset !important;
+    -webkit-text-fill-color: var(--ink) !important;
+    caret-color: var(--ink);
+    transition: background-color 999999s ease-out 0s !important;
+    border-radius: inherit;
+}
+
+.ant-input-affix-wrapper input,
+.ant-input-affix-wrapper input::placeholder {
+    caret-color: var(--ink);
+    -webkit-text-fill-color: var(--ink);
+    opacity: 1;
+}
+
+/* ============================================================
+   主页面背景（登录后）— 浅色 / 深色各自适配
+   ============================================================ */
+:root,
+[data-theme="light"] {
+    --mb-amber: rgba(245, 158, 11, 0.12);
+    --mb-blue: rgba(59, 130, 246, 0.10);
+    --mb-pink: rgba(236, 72, 153, 0.07);
+    --mb-green: rgba(16, 185, 129, 0.08);
+    --mb-grid: rgba(28, 25, 23, 0.035);
+}
+
+[data-theme="dark"] {
+    --mb-amber: rgba(245, 158, 11, 0.13);
+    --mb-blue: rgba(59, 130, 246, 0.11);
+    --mb-pink: rgba(236, 72, 153, 0.08);
+    --mb-green: rgba(16, 185, 129, 0.09);
+    --mb-grid: rgba(255, 255, 255, 0.03);
+}
